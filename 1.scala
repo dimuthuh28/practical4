@@ -1,61 +1,50 @@
-object app {
-  // display list
-  def displaylist(arr1: Array[String], arr2: Array[Int]): Unit = {
-    if (arr1.length == arr2.length) {
-      for (i <- 0 to arr1.length - 1) {
-        println("Item name : " + arr1(i) + " ->-> quantity : " + arr2(i));
-      }
-    } else {
-      println("Array length is not equal");
+object Store extends App {
+  var names = Array("A", "B", "C", "D")
+  var quantity = Array(10, 33, 21, 11)
+
+  def displayInventory(): Unit = {
+    for (i <- names.indices) {
+      val n = names(i)
+      val q = quantity(i)
+      println(s"$n -> $q")
     }
   }
-  // add quantity
-  def addQuantity(
-      arr1: Array[String],
-      arr2: Array[Int],
-      name: String,
-      quantity: Int
-  ): Unit = {
-    var index = arr1.indexOf(name);
-    if (arr1.length == arr2.length) {
-      if (index < 0) println(s"The ${name} doesn't exist")
-      else {
-        arr2(index) += quantity;
-        println(s"Restocked $quantity of '$name'. New quantity: ${arr2(index)}")
+
+  def restockItem(name: String, qty: Int): Unit = {
+    var found = false
+    for (i <- names.indices) {
+      if (names(i) == name) {
+        quantity(i) += qty
+        found = true
       }
     }
+    if (!found) {
+      println(s"$name does not exist.")
+    }
   }
-  // takes an item
-  def takesanitem(
-      arr1: Array[String],
-      arr2: Array[Int],
-      name: String,
-      quantity: Int
-  ): Unit = {
-    var index = arr1.indexOf(name);
-    if (arr1.length == arr2.length) {
-      if (index < 0) println(s"The ${name} doesn't exist")
-      else {
-        if (arr2(index) < quantity) {
-          println(
-            s"Error: Not enough quantity of '$name' to sell. Available quantity: ${arr2(index)}"
-          )
+
+  def sellItem(name: String, qty: Int): Unit = {
+    var found = false
+    for (i <- names.indices) {
+      if (names(i) == name) {
+        if (quantity(i) >= qty) {
+          quantity(i) -= qty
         } else {
-          arr2(index) -= quantity;
-          println(
-            s"Sold $quantity of '$name'. Remaining quantity: ${arr2(index)}"
-          )
-
+          println(s"Not enough $name left.")
         }
+        found = true
       }
+    }
+    if (!found) {
+      println(s"$name does not exist.")
     }
   }
 
-  def main(args: Array[String]): Unit = {
-    var itemname = Array("apple", "banana", "orange", "grapes", "mango");
-    var itemquantity = Array(5, 5, 4, 3, 5);
-    displaylist(itemname, itemquantity);
-    addQuantity(itemname, itemquantity, "apple", 3);
-    takesanitem(itemname, itemquantity, "apple", 4);
-  }
+  displayInventory()
+
+  restockItem("A", 5)
+  displayInventory()
+
+  sellItem("B", 12)
+  displayInventory()
 }
